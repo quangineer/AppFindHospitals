@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">HealthDouglas</string>
+    <string name="app_toptitle">Douglas Care</string>
+
+    <string name="newRegister">
+    New User ? Register <u>here</u>.
+    </string>
+
+    <string name="alreadyRegister">
+    Already have an account? Sign in <u>here</u>.
+    </string>
+
+    <string name="FindHospital">
+    FIND HOSPITALS \n NEAR YOU
+    </string>
+
+    <string name="NutritionAnalysis">
+    NUTRITION \n ANALYSIS
+    </string>
+
+    <string name="HealthArticles">
+    HEALTH \n ARTICLES
+    </string>
+
+    <string name="LogOut">
+    LOG \n OUT
+    </string>
+
+</resources>
