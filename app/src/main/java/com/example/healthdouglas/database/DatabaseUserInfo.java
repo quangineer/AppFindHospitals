@@ -15,7 +15,7 @@ public class DatabaseUserInfo extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CreateQueryTable = "create table DouglasCustomers(username text, email text, password text)";
+        String CreateQueryTable = "create table users(username text, email text, password text)";
         db.execSQL(CreateQueryTable);
     }
 
@@ -30,19 +30,19 @@ public class DatabaseUserInfo extends SQLiteOpenHelper {
         CV.put("email",email);
         CV.put("password",password);
         SQLiteDatabase db = getWritableDatabase();
-        db.insert("DouglasCustomers",null,CV);
+        db.insert("users",null,CV);
         db.close();
     }
 
     public int login(String username, String password){
-        int result = 0;
+        int result=0;
         String str[] = new String[2];
         str[0] = username;
         str[1] = password;
         SQLiteDatabase db = getReadableDatabase();
-        Cursor C = db.rawQuery("select * from DouglasCustomers where username=? and password=?",str);
-        if(C.moveToFirst()){
-            result = 1;
+        Cursor c = db.rawQuery("select * from users where username=? and password=?",str);
+        if(c.moveToFirst()){
+            result=1;
         }
         return result;
     }

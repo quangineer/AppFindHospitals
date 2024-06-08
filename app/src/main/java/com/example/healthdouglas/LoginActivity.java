@@ -42,8 +42,12 @@ public class LoginActivity extends AppCompatActivity {
                 if(username.length()==0 || password.length()==0){
                     Log.d("Check1","No User Input");
                     Toast.makeText(getApplicationContext(),"Insert User Info",Toast.LENGTH_LONG).show();
-                } else {
+                }
+                else {
                     Log.d("UP",username + " " + password);
+
+                    Boolean a = DBInfo.login(username,password)==1;
+                    Log.d("DOWN",a.toString());
                     if(DBInfo.login(username,password)==1){
                         Toast.makeText(getApplicationContext(),"Successful",Toast.LENGTH_LONG).show();
                         //store to data memory when login:
