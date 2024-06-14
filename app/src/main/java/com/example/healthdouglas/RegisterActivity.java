@@ -45,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String Email = EditEmail.getText().toString();
                 String Password = EditPassword.getText().toString();
                 String ConfirmPassword = EditConfirmPassword.getText().toString();
-                DatabaseUserInfo DB = new DatabaseUserInfo(getApplicationContext(),"DouglasCare",null,1);
+                DatabaseUserInfo DB = new DatabaseUserInfo(getApplicationContext(),"hc_db",null,1);
 
                 if(Email.length() !=0){
                     if(emailValid(Email)){}

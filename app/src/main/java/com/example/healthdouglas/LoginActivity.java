@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = edUserName.getText().toString();
                 String password = edPassword.getText().toString();
-                DatabaseUserInfo DBInfo = new DatabaseUserInfo(getApplicationContext(),"DC health",null,1);
+                DatabaseUserInfo DBInfo = new DatabaseUserInfo(getApplicationContext(),"hc_db",null,1);
                 if(username.length()==0 || password.length()==0){
                     Log.d("Check1","No User Input");
                     Toast.makeText(getApplicationContext(),"Insert User Info",Toast.LENGTH_LONG).show();
