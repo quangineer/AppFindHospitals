@@ -6,4 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".FindHospitalsNearYourActivity">
 
+    <fragment
+        android:id="@+id/id_map"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_location"
+        app:layout_constraintTop_toTopOf="@id/id_map"
+        app:layout_constraintBottom_toBottomOf="@id/id_map"
+        app:layout_constraintStart_toStartOf="@id/id_map"
+        app:layout_constraintEnd_toEndOf="@id/id_map"/>
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        android:background="@color/black"
+        android:text="Find Hospital"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
