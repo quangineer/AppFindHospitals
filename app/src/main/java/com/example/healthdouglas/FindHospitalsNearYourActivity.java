@@ -2,7 +2,10 @@ package com.example.healthdouglas;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +35,10 @@ public class FindHospitalsNearYourActivity extends AppCompatActivity implements 
 
     public Location searchLocation;
     public ArrayList<Place> searchPlaces;
+    public ArrayList<Place> searchPlacesVicinity;
+
+    public ArrayList<String> SearchPlacesNames;
+    public ArrayList<String> SearchPlacesVicinity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,21 +46,29 @@ public class FindHospitalsNearYourActivity extends AppCompatActivity implements 
         setContentView(R.layout.activity_find_hospitals_near_your);
         findViewById(R.id.ok_button).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                findNearbyHospitals(center.latitude,center.longitude);
-            }
+            public void onClick(View v) {findNearbyHospitals(center.latitude,center.longitude);}
         });
+
         SupportMapFragment mapFragment = (SupportMapFragment)  getSupportFragmentManager().findFragmentById(R.id.id_map);
         mapFragment.getMapAsync(this);
 
 //        findCoordinates("Calgary");
+
+
+        //Go Back Button:
+        findViewById(R.id.goBackButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FindHospitalsNearYourActivity.this,HomeActivity.class));
+            }
+        });
     }
 
     //default:
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         LatLng location = new LatLng(49.2827,-123.1207);
-        googleMap.addMarker(new MarkerOptions().position(location).title("VANCOUVER"));
+//        googleMap.addMarker(new MarkerOptions().position(location).title("VANCOUVER"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,2));
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -97,11 +112,27 @@ public class FindHospitalsNearYourActivity extends AppCompatActivity implements 
             searchPlaces = parsePlacesResponse(response);
             Log.d("Print all responses ",response);
             for (Place place: searchPlaces){
-                Log.d("Hospitals Found",place.name);
+                Log.d("HospitalsName Found",place.name);
+                SearchPlacesNames.add(place.name);
             }
+
+            searchPlacesVicinity = parseVicinity(response);
+            for (Place place: searchPlacesVicinity){
+                Log.d("Vicinity Found",place.vicinity);
+                SearchPlacesVicinity.add(place.vicinity);
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("ShowName",SearchPlacesNames);
+            bundle.putSerializable("ShowVicinity",SearchPlacesVicinity);
+
+            Intent intent = new Intent(FindHospitalsNearYourActivity.this,HospitalsResultsActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+
         }, error -> {
             //Handle API error when requested:
-            Toast.makeText(this,"Errod in finding hospitals.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Error in finding hospitals.",Toast.LENGTH_SHORT).show();
         });
         queue.add(request);
     }
@@ -144,12 +175,35 @@ public class FindHospitalsNearYourActivity extends AppCompatActivity implements 
         ArrayList<Place> Places = new ArrayList<>();
         //convert JSON string to a PlaceResponse object (PlaceResponse = List<Place> results + String status)
         PlacesResponse placesResponse = gson.fromJson(response,PlacesResponse.class);
+        Log.d("investigate1",response);
         //Check if results are available and status is OK
         if(placesResponse.results != null && placesResponse.status.equals("OK")){
             for(Place place : placesResponse.results){
                 String placeName = place.name;
                 P1 = new Place();
                 P1.name = placeName;
+                Places.add(P1);
+            }
+        } else {
+            Toast.makeText(this,"Error finding places: " + placesResponse.status, Toast.LENGTH_SHORT).show();
+        }
+        return Places;
+    }
+
+    //Parse to vicinity in an arraylist:
+    public ArrayList<Place> parseVicinity(String response) {
+        Gson gson = new Gson();
+        Place P1;
+        ArrayList<Place> Places = new ArrayList<>();
+        //convert JSON string to a PlaceResponse object (PlaceResponse = List<Place> results + String status)
+        PlacesResponse placesResponse = gson.fromJson(response,PlacesResponse.class);
+        Log.d("investigate1",response);
+        //Check if results are available and status is OK
+        if(placesResponse.results != null && placesResponse.status.equals("OK")){
+            for(Place place : placesResponse.results){
+                String placeVicinity = place.vicinity;
+                P1 = new Place();
+                P1.vicinity = placeVicinity;
                 Places.add(P1);
             }
         } else {
@@ -178,5 +232,6 @@ public class FindHospitalsNearYourActivity extends AppCompatActivity implements 
     }
     class Place{
         String name;
+        String vicinity;
     }
 }
