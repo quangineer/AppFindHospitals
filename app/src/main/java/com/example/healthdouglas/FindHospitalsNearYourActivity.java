@@ -34,11 +34,11 @@ public class FindHospitalsNearYourActivity extends AppCompatActivity implements 
     public String GOOGLE_MAPS_API_KEY = "";
 
     public Location searchLocation;
-    public ArrayList<Place> searchPlaces;
-    public ArrayList<Place> searchPlacesVicinity;
+    public ArrayList<Place> searchPlaces = new ArrayList<>();
+    public ArrayList<Place> searchPlacesVicinity = new ArrayList<>();
 
-    public ArrayList<String> SearchPlacesNames;
-    public ArrayList<String> SearchPlacesVicinity;
+    public ArrayList<String> SearchPlacesNames = new ArrayList<>();
+    public ArrayList<String> SearchPlacesVicinity = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,12 +122,15 @@ public class FindHospitalsNearYourActivity extends AppCompatActivity implements 
                 SearchPlacesVicinity.add(place.vicinity);
             }
 
+            ArrayList<Hospital> hospitals = parseHospitalsResponse(response);
+
             Bundle bundle = new Bundle();
             bundle.putSerializable("ShowName",SearchPlacesNames);
             bundle.putSerializable("ShowVicinity",SearchPlacesVicinity);
 
             Intent intent = new Intent(FindHospitalsNearYourActivity.this,HospitalsResultsActivity.class);
             intent.putExtras(bundle);
+            intent.putExtra("Hospitals", hospitals);
             startActivity(intent);
 
         }, error -> {
@@ -166,6 +169,25 @@ public class FindHospitalsNearYourActivity extends AppCompatActivity implements 
             Toast.makeText(this,"Geocoding failed: " + geocodingResponse.status, Toast.LENGTH_SHORT).show();
             return null;
         }
+    }
+
+    public ArrayList<Hospital> parseHospitalsResponse(String response) {
+        Gson gson = new Gson();
+        ArrayList<Hospital> hospitals = new ArrayList<>();
+        //convert JSON string to a PlaceResponse object (PlaceResponse = List<Place> results + String status)
+        PlacesResponse placesResponse = gson.fromJson(response, PlacesResponse.class);
+        Log.d("investigate1",response);
+        //Check if results are available and status is OK
+        if(placesResponse.results != null && placesResponse.status.equals("OK")){
+            for(Place place : placesResponse.results){
+                String placeName = place.name;
+                String vicinity = place.vicinity;
+                hospitals.add(new Hospital(placeName, vicinity));
+            }
+        } else {
+            Toast.makeText(this,"Error finding places: " + placesResponse.status, Toast.LENGTH_SHORT).show();
+        }
+        return hospitals;
     }
 
     //Parse to names in an arraylist:
